@@ -21,6 +21,12 @@ services:
     volumes:
       - /app/node_modules # but preserve node_modules folder from original image
       - ./api:/app # Use local machine's src for hot-reloading during development, path relative to docker-compose.yml
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PORT: '3306'
+      MYSQL_PASSWORD: password
+      MYSQL_DB: time_db
   mysql:
     image: mysql
     restart: always
