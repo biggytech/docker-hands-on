@@ -6,13 +6,21 @@ services:
     restart: always
     ports:
       - '3000:3000'
+    # Mapping for containers, not for Images!
+    volumes:
+      - /app/node_modules # but preserve node_modules folder from original image
+      - ./frontend:/app # Use local machine's src for hot-reloading during development, path relative to docker-compose.yml
   api:
     build: ./api
     restart: always
     ports:
       - '5555:5000'
     depends_on:
-      - mysql
+      - mysql # wait until mysql service starts, and only then start api service
+    # Mapping for containers, not for Images!
+    volumes:
+      - /app/node_modules # but preserve node_modules folder from original image
+      - ./api:/app # Use local machine's src for hot-reloading during development, path relative to docker-compose.yml
   mysql:
     image: mysql
     restart: always
@@ -20,7 +28,8 @@ services:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: time_db
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql # preserve MySQL data in Docker engine
+      # note, that if the path would start from dot (.mysql_data), it would mean path on local machine (vs Docker engine)
   adminer:
     image: adminer
     restart: always
